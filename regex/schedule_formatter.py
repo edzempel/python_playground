@@ -10,7 +10,7 @@ def main():
     print_header()
     if check_command_line_args():
         filename = get_data_file()
-        change_in_place(filename)
+        print("Made", change_in_place(filename), "changes")
 
 
 def print_header():
@@ -47,16 +47,21 @@ def get_data_file():
 
 
 def change_in_place(filename):
+    change_count = 0
     with in_place.InPlace(filename) as file:
         for line in file:
             # https://lzone.de/examples/Python%20re.sub
             # remove CT
-            line = re.sub(" CT", "", line)
+            line, n = re.subn(" CT", "", line)
+            change_count += n
             # remove MDWY
-            line = re.sub("MDWY - ", "", line)
+            line, n = re.subn("MDWY - ", "", line)
+            change_count += n
             # remove last column
-            line = re.sub(r"(.*)\t(.*)\t(.*)\t(.*)\t(.*)", r"\1\t\2\t\3\t\4", line)
+            line, n = re.subn(r"(.*)\t(.*)\t(.*)\t(.*)\t(.*)", r"\1\t\2\t\3\t\4", line)
+            change_count += n
             file.write(line)
+    return change_count
 
 
 if __name__ == "__main__":
