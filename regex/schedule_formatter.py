@@ -1,5 +1,7 @@
 import sys
 import os
+# https://pypi.org/project/in-place/
+import in_place
 
 
 def main():
@@ -8,8 +10,7 @@ def main():
     # print(get_data_file())
     if check_command_line_args():
         filename = get_data_file()
-        file = load_file(filename)
-        print(type(file))
+        change_in_place(filename)
 
 
 def print_header():
@@ -45,9 +46,12 @@ def get_data_file():
     return os.path.join(base_folder, sys.argv[1])
 
 
-def load_file(filename):
-    with open(filename, "r", encoding="utf-8") as fin:
-        return fin
+def change_in_place(filename):
+    with in_place.InPlace(filename) as file:
+        for line in file:
+            line = line
+            file.write(line)
+
 
 
 def regex_swap_last_two_columns():
