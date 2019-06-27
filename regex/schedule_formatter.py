@@ -1,13 +1,13 @@
 import sys
 import os
+
 # https://pypi.org/project/in-place/
 import in_place
+import re
 
 
 def main():
     print_header()
-    # print_command_line_args()
-    # print(get_data_file())
     if check_command_line_args():
         filename = get_data_file()
         change_in_place(filename)
@@ -49,17 +49,14 @@ def get_data_file():
 def change_in_place(filename):
     with in_place.InPlace(filename) as file:
         for line in file:
-            line = line
+            # https://lzone.de/examples/Python%20re.sub
+            # remove CT
+            line = re.sub(" CT", "", line)
+            # remove MDWY
+            line = re.sub("MDWY - ", "", line)
+            # remove last column
+            line = re.sub(r"(.*)\t(.*)\t(.*)\t(.*)\t(.*)", r"\1\t\2\t\3\t\4", line)
             file.write(line)
-
-
-
-def regex_swap_last_two_columns():
-    pass
-
-
-def regex_remove_extra_letters():
-    pass
 
 
 if __name__ == "__main__":
